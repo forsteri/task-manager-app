@@ -1,2 +1,8 @@
 # task-manager-app
-Task management application for learning application development
+## プロジェクト概要
+- このプロジェクトはタスク管理アプリの開発を通じて、GitHubやCDK、共同開発の流れを練習することを目的としています。
+
+## 開発フロー
+1. ブランチを切って作業。
+2. 作業内容をプルリクエストにまとめる。
+3. レビューを受けてマージする。
