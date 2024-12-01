@@ -1,0 +1,26 @@
+{
+    "name": "AWS CDK DevContainer", 
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "workspaceFolder": "/workspace", 
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+    "mounts": [ 
+        "source=node_modules,target=/workspace/infra/node_modules,type=volume"
+    ],
+    "remoteEnv": {
+        "AWS_ACCESS_KEY_ID": "${localEnv:AWS_ACCESS_KEY_ID}",
+        "AWS_SECRET_ACCESS_KEY": "${localEnv:AWS_SECRET_ACCESS_KEY}",
+        "AWS_REGION": "${localEnv:AWS_REGION}"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.vscode-typescript-tslint-plugin",
+                "amazonwebservices.aws-toolkit-vscode",
+                "dbaeumer.vscode-eslint",
+                "redhat.vscode-yaml"
+            ]
+        }
+    }
+}
