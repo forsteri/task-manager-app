@@ -8,7 +8,7 @@ export class TempCdkStack extends cdk.Stack {
 
     // S3バケットを作成
     new s3.Bucket(this, 'Haji-TempTestBucket', {
-      versioned: false, // バージョニングを無効化（テスト用に簡素化）
+      versioned: true, // バージョニング
       removalPolicy: cdk.RemovalPolicy.DESTROY, // スタック削除時にバケットも削除
       autoDeleteObjects: true, // オブジェクトも一緒に削除
     });
