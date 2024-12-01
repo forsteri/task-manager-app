@@ -30,10 +30,12 @@
 
         # 4. 依存ライブラリのインストール
         - name: Install dependencies
+          working-directory: infra
           run: |
             npm install
 
         # 5. CDK デプロイ
         - name: Deploy CDK stack
+          working-directory: infra
           run: |
             npx cdk deploy --require-approval never
