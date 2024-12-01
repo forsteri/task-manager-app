@@ -16,7 +16,6 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-vscode.vscode-typescript-tslint-plugin",
                 "amazonwebservices.aws-toolkit-vscode",
                 "dbaeumer.vscode-eslint",
                 "redhat.vscode-yaml"
