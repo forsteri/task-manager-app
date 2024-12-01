@@ -1,0 +1,20 @@
+# 依存関係
+node_modules/
+
+# TypeScriptのビルド成果物
+dist/
+*.js
+*.js.map
+
+# 環境ファイル
+.env
+
+# AWS CDK出力ファイル
+cdk.out/
+
+# ログファイル
+*.log
+
+# OS固有ファイル
+.DS_Store
+Thumbs.db
