@@ -30,30 +30,24 @@ task-manager-app/
 │       └── deploy.yml   # CI/CDの設定  
 
 1. トップレベル
-.devcontainer.json / Dockerfile:
-
-コンテナ環境の設定をリポジトリルートに置くことで、見通しを良くする。
-LICENSE / README.md:
-
-プロジェクトの概要や利用条件を示すファイル。
-.gitignore:
-
-不要なファイル（例: node_modules, cdk.out）がリポジトリに混ざらないように管理。
+- .devcontainer/
+  - コンテナ環境の設定
+- LICENSE / README.md:
+  - プロジェクトの概要や利用条件を示すファイル
+- .gitignore:
+  - 不要なファイル（例: node_modules, cdk.out）を管理
 2. app/（アプリケーションコード）
-Lambda関数やフロントエンドコードが入る場所。
-例えば、PythonのLambda関数なら、lambda_function.py をここに配置。
+- Lambda関数やフロントエンドコードが入る場所。
 3. infra/（CDKコード）
-CDKで定義するインフラのコード。
-cdk.json:
-CDKプロジェクトの設定ファイル。
-lib/:
-スタック定義をここにまとめる。
-例: my-stack.ts にS3バケットやLambdaの定義を記述。
+- CDKで定義するインフラのコード
+- cdk.json:
+  - CDKプロジェクトの設定ファイル
+- lib/:
+  - スタック定義をここにまとめる
 4. scripts/（補助スクリプト）
-CI/CD以外で手動デプロイや削除をしたいときのスクリプトを置く場所。
+- CI/CD以外で手動デプロイや削除をしたいときのスクリプトを置く場所
 5. .github/（GitHub Actions設定）
-CI/CDのワークフロー定義。
-deploy.yml にプッシュ時のビルド・デプロイの流れを記述。
+- CI/CDのワークフロー定義
 
 ## 開発フロー
 1. ブランチを切って作業。
