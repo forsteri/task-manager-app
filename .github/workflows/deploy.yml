@@ -1,4 +1,4 @@
-  name: Deploy CDK App
+  name: Deploy Full App
 
   on:
     push:
@@ -28,13 +28,25 @@
             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws-region: 'ap-northeast-1'
 
-        # 4. 依存ライブラリのインストール
-        - name: Install dependencies
+        # 4. Lambda用の依存ライブラリのインストール
+        - name: Install Lambda dependencies
+          working-directory: lambda
+          run: |
+            npm install
+
+        # 5. Lambdaのビルド
+        - name: Build Lambda
+          working-directory: lambda
+          run: |
+            npm run build
+
+        # 6. CDK用の依存ライブラリのインストール
+        - name: Install CDK dependencies
           working-directory: infra
           run: |
             npm install
 
-        # 5. CDK デプロイ
+        # 7. CDK デプロイ
         - name: Deploy CDK stack
           working-directory: infra
           run: |
