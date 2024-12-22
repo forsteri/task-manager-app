@@ -32,16 +32,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     unzip \
     less \
     git \
-    docker.io \
-    docker-compose && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-# Dockerの設定
-RUN usermod -aG docker root
-
-# 必要な環境変数をセット
-ENV DOCKER_BUILDKIT=1
 
 # Pythonのインストール
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
