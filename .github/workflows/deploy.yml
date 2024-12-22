@@ -33,6 +33,7 @@
           working-directory: lambda
           run: |
             npm install
+            npm install --save-dev @types/node
 
         # 5. Lambdaのビルド
         - name: Build Lambda
