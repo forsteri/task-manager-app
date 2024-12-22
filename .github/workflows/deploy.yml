@@ -4,6 +4,11 @@
     push:
       branches:
         - main  # mainブランチへのプッシュをトリガー
+      paths:
+        - 'lambda/**'  # Lambdaコードの変更
+        - 'infra/**'  # CDKコードの変更
+        - 'package.json'  # 依存ライブラリの変更
+        - 'tsconfig.json'  # TypeScriptの設定ファイルの変更
 
   jobs:
     deploy:
