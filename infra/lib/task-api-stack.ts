@@ -17,7 +17,7 @@ export class TaskApiStack extends cdk.Stack {
     // Lambda関数を作成
     const createTaskLambda = new lambda.Function(this, 'CreateTaskFunction', {
       runtime: lambda.Runtime.NODEJS_22_X,
-      code: lambda.Code.fromAsset('lambda/dist'),
+      code: lambda.Code.fromAsset('../lambda/dist'),
       handler: 'create-task.handler', // ファイル名とエクスポートする関数名
       environment: {
         TABLE_NAME: taskTable.tableName
