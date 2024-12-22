@@ -1,107 +1,131 @@
 {
   "version": "38.0.1",
   "artifacts": {
-    "TempCdkStack.assets": {
+    "TaskApiStack.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
-        "file": "TempCdkStack.assets.json",
+        "file": "TaskApiStack.assets.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
       }
     },
-    "TempCdkStack": {
+    "TaskApiStack": {
       "type": "aws:cloudformation:stack",
-      "environment": "aws://unknown-account/unknown-region",
+      "environment": "aws://unknown-account/ap-northeast-1",
       "properties": {
-        "templateFile": "TempCdkStack.template.json",
+        "templateFile": "TaskApiStack.template.json",
         "terminationProtection": false,
         "validateOnSynth": false,
-        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
-        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fb4cbbadcc574d0be04c5e5201b7403c045207d5303c6552ecc001b9746f2269.json",
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-ap-northeast-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-ap-northeast-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1/5bf33f8081d8194a1962e3deb4aab6761d5cffee0bb296223659dc1fa8fdb69b.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
-          "TempCdkStack.assets"
+          "TaskApiStack.assets"
         ],
         "lookupRole": {
-          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-ap-northeast-1",
           "requiresBootstrapStackVersion": 8,
           "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
         }
       },
       "dependencies": [
-        "TempCdkStack.assets"
+        "TaskApiStack.assets"
       ],
       "metadata": {
-        "/TempCdkStack/Haji-TempTestBucket/Resource": [
+        "/TaskApiStack/TaskTable/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "HajiTempTestBucket01C9F298"
+            "data": "TaskTable22070546"
           }
         ],
-        "/TempCdkStack/Haji-TempTestBucket/Policy/Resource": [
+        "/TaskApiStack/CreateTaskFunction/ServiceRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "HajiTempTestBucketPolicyF93FAB9A"
+            "data": "CreateTaskFunctionServiceRole819710B4"
           }
         ],
-        "/TempCdkStack/Haji-TempTestBucket/AutoDeleteObjectsCustomResource/Default": [
+        "/TaskApiStack/CreateTaskFunction/ServiceRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "HajiTempTestBucketAutoDeleteObjectsCustomResourceCC2AEE84"
+            "data": "CreateTaskFunctionServiceRoleDefaultPolicy507F4D73"
           }
         ],
-        "/TempCdkStack/LatestNodeRuntimeMap": [
+        "/TaskApiStack/CreateTaskFunction/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "LatestNodeRuntimeMap"
+            "data": "CreateTaskFunctionDCD05326"
           }
         ],
-        "/TempCdkStack/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
-          {
-            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
-            "data": true
-          }
-        ],
-        "/TempCdkStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+        "/TaskApiStack/TaskApi/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+            "data": "TaskApiAF5FA34D"
           }
         ],
-        "/TempCdkStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+        "/TaskApiStack/TaskApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+            "data": "TaskApiDeployment5631883Ab9a6b02532cccbc10b6322488cb20ec1"
           }
         ],
-        "/TempCdkStack/CDKMetadata/Default": [
+        "/TaskApiStack/TaskApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaskApiDeploymentStageprod729218FC"
+          }
+        ],
+        "/TaskApiStack/TaskApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaskApiEndpoint62F5C7D2"
+          }
+        ],
+        "/TaskApiStack/TaskApi/Default/tasks/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaskApitasks2E693AA4"
+          }
+        ],
+        "/TaskApiStack/TaskApi/Default/tasks/POST/ApiPermission.TaskApiStackTaskApi0F519021.POST..tasks": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaskApitasksPOSTApiPermissionTaskApiStackTaskApi0F519021POSTtasks5B953CB0"
+          }
+        ],
+        "/TaskApiStack/TaskApi/Default/tasks/POST/ApiPermission.Test.TaskApiStackTaskApi0F519021.POST..tasks": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaskApitasksPOSTApiPermissionTestTaskApiStackTaskApi0F519021POSTtasksE3D9EB88"
+          }
+        ],
+        "/TaskApiStack/TaskApi/Default/tasks/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaskApitasksPOST212270FC"
+          }
+        ],
+        "/TaskApiStack/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
           }
         ],
-        "/TempCdkStack/CDKMetadata/Condition": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CDKMetadataAvailable"
-          }
-        ],
-        "/TempCdkStack/BootstrapVersion": [
+        "/TaskApiStack/BootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "BootstrapVersion"
           }
         ],
-        "/TempCdkStack/CheckBootstrapVersion": [
+        "/TaskApiStack/CheckBootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CheckBootstrapVersion"
           }
         ]
       },
-      "displayName": "TempCdkStack"
+      "displayName": "TaskApiStack"
     },
     "Tree": {
       "type": "cdk:tree",

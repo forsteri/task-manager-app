@@ -4,187 +4,510 @@
     "id": "App",
     "path": "",
     "children": {
-      "TempCdkStack": {
-        "id": "TempCdkStack",
-        "path": "TempCdkStack",
+      "TaskApiStack": {
+        "id": "TaskApiStack",
+        "path": "TaskApiStack",
         "children": {
-          "Haji-TempTestBucket": {
-            "id": "Haji-TempTestBucket",
-            "path": "TempCdkStack/Haji-TempTestBucket",
+          "TaskTable": {
+            "id": "TaskTable",
+            "path": "TaskApiStack/TaskTable",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "TempCdkStack/Haji-TempTestBucket/Resource",
+                "path": "TaskApiStack/TaskTable/Resource",
                 "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
                   "aws:cdk:cloudformation:props": {
-                    "tags": [
+                    "attributeDefinitions": [
                       {
-                        "key": "aws-cdk:auto-delete-objects",
-                        "value": "true"
+                        "attributeName": "taskId",
+                        "attributeType": "S"
                       }
-                    ]
+                    ],
+                    "keySchema": [
+                      {
+                        "attributeName": "taskId",
+                        "keyType": "HASH"
+                      }
+                    ],
+                    "provisionedThroughput": {
+                      "readCapacityUnits": 5,
+                      "writeCapacityUnits": 5
+                    }
                   }
                 },
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
-                  "version": "2.170.0"
+                  "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                  "version": "2.173.1"
                 }
               },
-              "Policy": {
-                "id": "Policy",
-                "path": "TempCdkStack/Haji-TempTestBucket/Policy",
+              "ScalingRole": {
+                "id": "ScalingRole",
+                "path": "TaskApiStack/TaskTable/ScalingRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.173.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+              "version": "2.173.1"
+            }
+          },
+          "CreateTaskFunction": {
+            "id": "CreateTaskFunction",
+            "path": "TaskApiStack/CreateTaskFunction",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "TaskApiStack/CreateTaskFunction/ServiceRole",
                 "children": {
+                  "ImportServiceRole": {
+                    "id": "ImportServiceRole",
+                    "path": "TaskApiStack/CreateTaskFunction/ServiceRole/ImportServiceRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.173.1"
+                    }
+                  },
                   "Resource": {
                     "id": "Resource",
-                    "path": "TempCdkStack/Haji-TempTestBucket/Policy/Resource",
+                    "path": "TaskApiStack/CreateTaskFunction/ServiceRole/Resource",
                     "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::S3::BucketPolicy",
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                       "aws:cdk:cloudformation:props": {
-                        "bucket": {
-                          "Ref": "HajiTempTestBucket01C9F298"
-                        },
-                        "policyDocument": {
+                        "assumeRolePolicyDocument": {
                           "Statement": [
                             {
-                              "Action": [
-                                "s3:DeleteObject*",
-                                "s3:GetBucket*",
-                                "s3:List*",
-                                "s3:PutBucketPolicy"
-                              ],
+                              "Action": "sts:AssumeRole",
                               "Effect": "Allow",
                               "Principal": {
-                                "AWS": {
-                                  "Fn::GetAtt": [
-                                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-                                    "Arn"
-                                  ]
-                                }
-                              },
-                              "Resource": [
-                                {
-                                  "Fn::GetAtt": [
-                                    "HajiTempTestBucket01C9F298",
-                                    "Arn"
-                                  ]
-                                },
-                                {
-                                  "Fn::Join": [
-                                    "",
-                                    [
-                                      {
-                                        "Fn::GetAtt": [
-                                          "HajiTempTestBucket01C9F298",
-                                          "Arn"
-                                        ]
-                                      },
-                                      "/*"
-                                    ]
-                                  ]
-                                }
-                              ]
+                                "Service": "lambda.amazonaws.com"
+                              }
                             }
                           ],
                           "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.173.1"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "TaskApiStack/CreateTaskFunction/ServiceRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "TaskApiStack/CreateTaskFunction/ServiceRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "TaskTable22070546",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "CreateTaskFunctionServiceRoleDefaultPolicy507F4D73",
+                            "roles": [
+                              {
+                                "Ref": "CreateTaskFunctionServiceRole819710B4"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.173.1"
                         }
                       }
                     },
                     "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_s3.CfnBucketPolicy",
-                      "version": "2.170.0"
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.173.1"
                     }
                   }
                 },
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_s3.BucketPolicy",
-                  "version": "2.170.0"
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.173.1"
                 }
               },
-              "AutoDeleteObjectsCustomResource": {
-                "id": "AutoDeleteObjectsCustomResource",
-                "path": "TempCdkStack/Haji-TempTestBucket/AutoDeleteObjectsCustomResource",
+              "Code": {
+                "id": "Code",
+                "path": "TaskApiStack/CreateTaskFunction/Code",
                 "children": {
-                  "Default": {
-                    "id": "Default",
-                    "path": "TempCdkStack/Haji-TempTestBucket/AutoDeleteObjectsCustomResource/Default",
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "TaskApiStack/CreateTaskFunction/Code/Stage",
                     "constructInfo": {
-                      "fqn": "aws-cdk-lib.CfnResource",
-                      "version": "2.170.0"
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.173.1"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "TaskApiStack/CreateTaskFunction/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.173.1"
                     }
                   }
                 },
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.CustomResource",
-                  "version": "2.170.0"
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.173.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "TaskApiStack/CreateTaskFunction/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+                      },
+                      "s3Key": "31a956da7a3a8e7dc706b8160ede1cf930fd7e8b436b3204f1a35d0255cd7820.zip"
+                    },
+                    "environment": {
+                      "variables": {
+                        "TABLE_NAME": {
+                          "Ref": "TaskTable22070546"
+                        }
+                      }
+                    },
+                    "handler": "create-task.handler",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "CreateTaskFunctionServiceRole819710B4",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": "nodejs22.x"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.173.1"
                 }
               }
             },
             "constructInfo": {
-              "fqn": "aws-cdk-lib.aws_s3.Bucket",
-              "version": "2.170.0"
+              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "version": "2.173.1"
             }
           },
-          "LatestNodeRuntimeMap": {
-            "id": "LatestNodeRuntimeMap",
-            "path": "TempCdkStack/LatestNodeRuntimeMap",
-            "constructInfo": {
-              "fqn": "aws-cdk-lib.CfnMapping",
-              "version": "2.170.0"
-            }
-          },
-          "Custom::S3AutoDeleteObjectsCustomResourceProvider": {
-            "id": "Custom::S3AutoDeleteObjectsCustomResourceProvider",
-            "path": "TempCdkStack/Custom::S3AutoDeleteObjectsCustomResourceProvider",
+          "TaskApi": {
+            "id": "TaskApi",
+            "path": "TaskApiStack/TaskApi",
             "children": {
-              "Staging": {
-                "id": "Staging",
-                "path": "TempCdkStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Staging",
+              "Resource": {
+                "id": "Resource",
+                "path": "TaskApiStack/TaskApi/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::RestApi",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "This service handles task creation.",
+                    "name": "Task Management API"
+                  }
+                },
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.AssetStaging",
-                  "version": "2.170.0"
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnRestApi",
+                  "version": "2.173.1"
                 }
               },
-              "Role": {
-                "id": "Role",
-                "path": "TempCdkStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role",
+              "Deployment": {
+                "id": "Deployment",
+                "path": "TaskApiStack/TaskApi/Deployment",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "TaskApiStack/TaskApi/Deployment/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Deployment",
+                      "aws:cdk:cloudformation:props": {
+                        "description": "This service handles task creation.",
+                        "restApiId": {
+                          "Ref": "TaskApiAF5FA34D"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnDeployment",
+                      "version": "2.173.1"
+                    }
+                  }
+                },
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnResource",
-                  "version": "2.170.0"
+                  "fqn": "aws-cdk-lib.aws_apigateway.Deployment",
+                  "version": "2.173.1"
                 }
               },
-              "Handler": {
-                "id": "Handler",
-                "path": "TempCdkStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler",
+              "DeploymentStage.prod": {
+                "id": "DeploymentStage.prod",
+                "path": "TaskApiStack/TaskApi/DeploymentStage.prod",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "TaskApiStack/TaskApi/DeploymentStage.prod/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Stage",
+                      "aws:cdk:cloudformation:props": {
+                        "deploymentId": {
+                          "Ref": "TaskApiDeployment5631883Ab9a6b02532cccbc10b6322488cb20ec1"
+                        },
+                        "restApiId": {
+                          "Ref": "TaskApiAF5FA34D"
+                        },
+                        "stageName": "prod"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnStage",
+                      "version": "2.173.1"
+                    }
+                  }
+                },
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnResource",
-                  "version": "2.170.0"
+                  "fqn": "aws-cdk-lib.aws_apigateway.Stage",
+                  "version": "2.173.1"
+                }
+              },
+              "Endpoint": {
+                "id": "Endpoint",
+                "path": "TaskApiStack/TaskApi/Endpoint",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.173.1"
+                }
+              },
+              "Default": {
+                "id": "Default",
+                "path": "TaskApiStack/TaskApi/Default",
+                "children": {
+                  "tasks": {
+                    "id": "tasks",
+                    "path": "TaskApiStack/TaskApi/Default/tasks",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "TaskApiStack/TaskApi/Default/tasks/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                          "aws:cdk:cloudformation:props": {
+                            "parentId": {
+                              "Fn::GetAtt": [
+                                "TaskApiAF5FA34D",
+                                "RootResourceId"
+                              ]
+                            },
+                            "pathPart": "tasks",
+                            "restApiId": {
+                              "Ref": "TaskApiAF5FA34D"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                          "version": "2.173.1"
+                        }
+                      },
+                      "POST": {
+                        "id": "POST",
+                        "path": "TaskApiStack/TaskApi/Default/tasks/POST",
+                        "children": {
+                          "ApiPermission.TaskApiStackTaskApi0F519021.POST..tasks": {
+                            "id": "ApiPermission.TaskApiStackTaskApi0F519021.POST..tasks",
+                            "path": "TaskApiStack/TaskApi/Default/tasks/POST/ApiPermission.TaskApiStackTaskApi0F519021.POST..tasks",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "CreateTaskFunctionDCD05326",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:aws:execute-api:ap-northeast-1:",
+                                      {
+                                        "Ref": "AWS::AccountId"
+                                      },
+                                      ":",
+                                      {
+                                        "Ref": "TaskApiAF5FA34D"
+                                      },
+                                      "/",
+                                      {
+                                        "Ref": "TaskApiDeploymentStageprod729218FC"
+                                      },
+                                      "/POST/tasks"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.173.1"
+                            }
+                          },
+                          "ApiPermission.Test.TaskApiStackTaskApi0F519021.POST..tasks": {
+                            "id": "ApiPermission.Test.TaskApiStackTaskApi0F519021.POST..tasks",
+                            "path": "TaskApiStack/TaskApi/Default/tasks/POST/ApiPermission.Test.TaskApiStackTaskApi0F519021.POST..tasks",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "CreateTaskFunctionDCD05326",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:aws:execute-api:ap-northeast-1:",
+                                      {
+                                        "Ref": "AWS::AccountId"
+                                      },
+                                      ":",
+                                      {
+                                        "Ref": "TaskApiAF5FA34D"
+                                      },
+                                      "/test-invoke-stage/POST/tasks"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.173.1"
+                            }
+                          },
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "TaskApiStack/TaskApi/Default/tasks/POST/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "authorizationType": "NONE",
+                                "httpMethod": "POST",
+                                "integration": {
+                                  "type": "AWS_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "CreateTaskFunctionDCD05326",
+                                            "Arn"
+                                          ]
+                                        },
+                                        "/invocations"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "POST"
+                                },
+                                "resourceId": {
+                                  "Ref": "TaskApitasks2E693AA4"
+                                },
+                                "restApiId": {
+                                  "Ref": "TaskApiAF5FA34D"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.173.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.173.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                      "version": "2.173.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.ResourceBase",
+                  "version": "2.173.1"
                 }
               }
             },
             "constructInfo": {
-              "fqn": "aws-cdk-lib.CustomResourceProviderBase",
-              "version": "2.170.0"
+              "fqn": "aws-cdk-lib.aws_apigateway.RestApi",
+              "version": "2.173.1"
             }
           },
           "CDKMetadata": {
             "id": "CDKMetadata",
-            "path": "TempCdkStack/CDKMetadata",
+            "path": "TaskApiStack/CDKMetadata",
             "children": {
               "Default": {
                 "id": "Default",
-                "path": "TempCdkStack/CDKMetadata/Default",
+                "path": "TaskApiStack/CDKMetadata/Default",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
-                  "version": "2.170.0"
-                }
-              },
-              "Condition": {
-                "id": "Condition",
-                "path": "TempCdkStack/CDKMetadata/Condition",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnCondition",
-                  "version": "2.170.0"
+                  "version": "2.173.1"
                 }
               }
             },
@@ -195,24 +518,24 @@
           },
           "BootstrapVersion": {
             "id": "BootstrapVersion",
-            "path": "TempCdkStack/BootstrapVersion",
+            "path": "TaskApiStack/BootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnParameter",
-              "version": "2.170.0"
+              "version": "2.173.1"
             }
           },
           "CheckBootstrapVersion": {
             "id": "CheckBootstrapVersion",
-            "path": "TempCdkStack/CheckBootstrapVersion",
+            "path": "TaskApiStack/CheckBootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnRule",
-              "version": "2.170.0"
+              "version": "2.173.1"
             }
           }
         },
         "constructInfo": {
           "fqn": "aws-cdk-lib.Stack",
-          "version": "2.170.0"
+          "version": "2.173.1"
         }
       },
       "Tree": {
@@ -226,7 +549,7 @@
     },
     "constructInfo": {
       "fqn": "aws-cdk-lib.App",
-      "version": "2.170.0"
+      "version": "2.173.1"
     }
   }
 }

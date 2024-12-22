@@ -6,7 +6,8 @@
     "workspaceFolder": "/workspace", 
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
     "mounts": [ 
-        "source=node_modules,target=/workspace/infra/node_modules,type=volume"
+        "source=node_modules,target=/workspace/infra/node_modules,type=volume", 
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
     ],
     "remoteEnv": {
         "AWS_ACCESS_KEY_ID": "${localEnv:AWS_ACCESS_KEY_ID}",
