@@ -16,7 +16,7 @@ export class TaskApiStack extends cdk.Stack {
 
     // Lambda関数を作成
     const createTaskLambda = new lambda.Function(this, 'CreateTaskFunction', {
-      runtime: lambda.Runtime.NODEJS_22_X, 
+      runtime: lambda.Runtime.NODEJS_22_X,
       code: lambda.Code.fromAsset('../lambda/dist'),
       handler: 'create-task.handler',
       environment: {
@@ -42,10 +42,21 @@ export class TaskApiStack extends cdk.Stack {
       },
     });
 
-    // Lambda関数にDynamoDBへの書き込み権限を付与
+    const listTasksLambda = new lambda.Function(this, 'ListTasksFunction', {
+      runtime: lambda.Runtime.NODEJS_22_X,
+      code: lambda.Code.fromAsset('../lambda/dist'),
+      handler: 'list-tasks.handler',
+      environment: {
+        TABLE_NAME: taskTable.tableName,
+      },
+    });
+
+    // Lambda関数にDynamoDBへの権限を付与
     taskTable.grantWriteData(createTaskLambda);
     taskTable.grantWriteData(updateTaskLambda);
     taskTable.grantWriteData(deleteTaskLambda);
+    taskTable.grantReadData(listTasksLambda); // タスク一覧用に読み取り権限を追加
+    taskTable.grantReadData(updateTaskLambda); // タスク更新用に読み取り/書き込み権限を追加
 
     // API Gatewayを作成
     const api = new apigateway.RestApi(this, 'TaskApi', {
@@ -59,6 +70,7 @@ export class TaskApiStack extends cdk.Stack {
 
     const tasksResource = api.root.addResource('tasks');
     tasksResource.addMethod('POST', new apigateway.LambdaIntegration(createTaskLambda));
+    tasksResource.addMethod('GET', new apigateway.LambdaIntegration(listTasksLambda)); // タスク一覧取得用GETメソッドを追加
 
     const taskResource = tasksResource.addResource('{taskId}');
     taskResource.addMethod('PATCH', new apigateway.LambdaIntegration(updateTaskLambda));
