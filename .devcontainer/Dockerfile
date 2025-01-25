@@ -4,7 +4,7 @@ FROM debian:bookworm-slim
 # バージョンの指定
 ARG PYTHON_VERSION=3.11
 ARG NODEJS_VERSION=22.11.0
-ARG AWS_CDK_VERSION=2.170.0
+ARG AWS_CDK_VERSION=2.176.0
 ARG SERVERLESS_VERSION=3.39.0
 ARG AWS_SAM_VERSION=1.130.0
 
@@ -31,9 +31,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     jq \
     unzip \
     less \
-    git \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    git
+#    apt-get clean && \
+#    rm -rf /var/lib/apt/lists/*
 
 # Pythonのインストール
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \

@@ -4,19 +4,19 @@
     "description": "AWS Lambda function",
     "main": "dist/index.js",
     "scripts": {
-      "build": "tsc",
-      "test": "jest"
+        "build": "tsc",
+        "test": "jest"
     },
     "dependencies": {
-      "@aws-sdk/client-dynamodb": "^3.716.0",
-      "uuid": "^9.0.1"
+        "@aws-sdk/client-dynamodb": "^3.716.0",
+        "uuid": "^9.0.1"
     },
     "devDependencies": {
-      "typescript": "^5.6.3"
+        "@types/aws-lambda": "^8.10.147",
+        "typescript": "^5.6.3"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "type": "commonjs"
-  }
-  
+}
