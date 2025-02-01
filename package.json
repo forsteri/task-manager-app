@@ -2,13 +2,13 @@
     "name": "temp-cdk",
     "version": "0.1.0",
     "bin": {
-        "temp-cdk": "infra/bin/temp-cdk.js"
+        "temp-cdk": "infra/bin/main.js"
     },
     "scripts": {
         "lambda:build": "cd lambda && npm run build",
-        "cdk:deploy": "cd infra && npx cdk deploy",
+        "cdk:deploy": "cd infra && npx cdk deploy TaskDatabaseStack TaskApiStack TaskFrontendStack",
         "deploy": "npm run lambda:build && npm run cdk:deploy",
-        "clean": "rm -rf lambda/dist lambda/node_modules infra/node_modules infra/cdk.out"
+        "clean": "rm -rf lambda/dist lambda/node_modules infra/node_modules infra/cdk.out infra/cdk.context.json"
     },
     "devDependencies": {
         "@types/jest": "^29.5.14",
