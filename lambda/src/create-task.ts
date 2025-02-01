@@ -35,6 +35,11 @@ export const handler = async (event: any) => {
 
     return {
       statusCode: 201,
+      headers: {
+        "Access-Control-Allow-Origin": "*", 
+        "Access-Control-Allow-Methods": "OPTIONS, POST, GET, PATCH, DELETE",
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
       body: JSON.stringify({
         message: 'Task created successfully!',
         task: taskItem

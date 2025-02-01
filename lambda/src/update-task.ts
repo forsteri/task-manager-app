@@ -3,6 +3,11 @@ import { DynamoDBClient, UpdateItemCommand, GetItemCommand } from '@aws-sdk/clie
 
 const dynamoDb = new DynamoDBClient({ region: 'ap-northeast-1' });
 const tableName = process.env.TABLE_NAME || '';
+const headers: Record<string, string> = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "OPTIONS, POST, GET, PATCH, DELETE",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent) => {
   const taskId = event.pathParameters?.taskId;
@@ -91,6 +96,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     return {
       statusCode: 200,
+      headers: headers,
       body: JSON.stringify({
         message: 'Task updated successfully',
         updatedTask,
@@ -100,6 +106,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     console.error('Error updating task:', error);
     return {
       statusCode: 500,
+      headers: headers,
       body: JSON.stringify({
         message: 'Failed to update task',
         error: (error as Error).message,
