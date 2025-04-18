@@ -2,8 +2,8 @@
 node_modules/
 
 # TypeScriptのビルド成果物
-dist/
-*.js
+serverless/lambda/dist/
+serverless/infra/dist/
 *.js.map
 
 # 環境ファイル
