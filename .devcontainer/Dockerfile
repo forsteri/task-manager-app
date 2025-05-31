@@ -4,6 +4,7 @@ FROM debian:bookworm-slim
 # バージョンの指定
 ARG PYTHON_VERSION=3.11
 ARG NODEJS_VERSION=22.16.0
+ARG NPM_VERSION=10.9.2
 ARG AWS_CDK_VERSION=2.1017
 ARG SERVERLESS_VERSION=3.39.0
 ARG AWS_SAM_VERSION=1.130.0
@@ -53,7 +54,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     curl -fsSL https://deb.nodesource.com/setup_${NODEJS_VERSION%%.*}.x | bash - \
     && apt-get update \
     && apt-get install --no-install-recommends -y nodejs=${NODEJS_VERSION}-1nodesource1 \
-    && npm install -g npm@latest
+    && npm install -g npm@${NPM_VERSION}
 
 # AWS CLIのインストール
 RUN case ${TARGETARCH} in \
